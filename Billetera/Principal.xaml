@@ -1,0 +1,81 @@
+﻿<Page x:Class="Billetera.Principal"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Billetera"
+      mc:Ignorable="d" 
+      d:DesignHeight="1080" d:DesignWidth="1920"
+      Title="Principal">
+
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0">
+            <StackPanel DockPanel.Dock="Top" Background="#003A70" Margin="0,0,0,0">
+                <Label Style="{StaticResource listHeaderTextStyle}">APOLO ATM</Label>
+                <Label Style="{StaticResource listHeaderTextStyle}">DEPOSITAR</Label>
+            </StackPanel>
+        </DockPanel>
+        <StackPanel Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Total a depositar:" Margin="0, 0 70, 0" TextAlignment="Right" FontSize="45" FontWeight="Bold"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="$600.00" FontSize="45" FontWeight="Bold" x:Name="TotalDepositar"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Depositado:" Margin="0, 0 70, 0" TextAlignment="Right" FontSize="55" FontWeight="Bold"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="$0.00" FontSize="55" FontWeight="Bold" x:Name="Depositado"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Restante:" Margin="0, 0 70, 0" TextAlignment="Right" FontSize="45" FontWeight="Bold"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="$600.00" FontSize="45" FontWeight="Bold" x:Name="Restante"/>
+            </Grid>
+        </StackPanel>
+        <StackPanel Grid.Row="2">
+            <Grid  Margin="0,20,0,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Devolver" Click="DevolverButton" Style="{StaticResource cancelDepositarButton}" x:Name="Cancelar">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <Button Grid.Column="2" Content="Stack" Click="Stack" Style="{StaticResource finalizarButton}">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Page>

@@ -1,0 +1,30 @@
+﻿<Application x:Class="Billetera.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Billetera"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Style x:Key="listHeaderTextStyle" TargetType="{x:Type Label}">
+            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="finalizarButton" TargetType="Button">
+            <Setter Property="Background" Value="#1B7FCC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0, 0, 180, 0"/>
+            <Setter Property="Padding" Value="80, 40, 80,40"/>
+            <Setter Property="FontSize" Value="35"/>
+        </Style>
+        <Style x:Key="cancelDepositarButton" TargetType="Button">
+            <Setter Property="Background" Value="#C0DCF2"/>
+            <Setter Property="Foreground" Value="#0D0D0D"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="180, 0, 0, 0"/>
+            <Setter Property="Padding" Value="80, 40, 80,40"/>
+            <Setter Property="FontSize" Value="35"/>
+        </Style>
+    </Application.Resources>
+</Application>
