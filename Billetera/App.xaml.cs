@@ -22,10 +22,10 @@ namespace Billetera
             //    args.Handled = true; // Evita que la aplicación se cierre
             //};
 
-            base.OnStartup(e);
-            MessageBox.Show("La aplicación se está iniciando");
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.Show();
+            //base.OnStartup(e);
+            //MessageBox.Show("La aplicación se está iniciando");
+            //MainWindow mainWindow = new MainWindow();
+            //mainWindow.Show();
         }
 
     }
