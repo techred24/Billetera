@@ -21,31 +21,38 @@ namespace Billetera
     /// </summary>
     public partial class Principal : Page
     {
-        public static double totalDepositar = 50;
-        private Acceptor acceptor;
+        private static double totalDepositar = 50;
+        private Acceptor? acceptor;
         public Principal()
         {
             InitializeComponent();
             // Método de double: ingresado.ToString("F2");
             //string depositadoTexto = Depositado.Text.Replace("$", "");
             //float.TryParse(depositadoTexto, out float importeatm);
-            acceptor = new Acceptor();
-            acceptor.Open("COM2");
-            TotalDepositar.Text = $"${totalDepositar:0.00}";
-            Restante.Text = $"${totalDepositar:0.00}";
-            //Depositado.Text = $"${totalDepositar:0.00}";
+            try
+            {
+                acceptor = new Acceptor();
+                acceptor.Open("COM2");
+                TotalDepositar.Text = $"${totalDepositar:0.00}";
+                Restante.Text = $"${totalDepositar:0.00}";
+                //Depositado.Text = $"${totalDepositar:0.00}";
+            } catch (Exception ex)
+            {
+                MessageBox.Show($"Error en el constructor de Principal: {ex.Message}\n{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+            }
+
+
         }
-        private async Task DevolverButton(object sender, RoutedEventArgs e)
-        {
-            acceptor.EscrowReturn();
-            await Task.Delay(2000);
-            acceptor.Close();
-        }
-        private async Task Stack(object sender, RoutedEventArgs e)
-        {
-            acceptor.EscrowStack();
-            await Task.Delay(2000);
-            acceptor.Close();
-        }
+        //private void DevolverButton(object sender, RoutedEventArgs e)
+        //{
+        //    //acceptor.EscrowReturn();
+        //    //acceptor.Close();
+        //}
+        //private void Stack(object sender, RoutedEventArgs e)
+        //{
+        //    //acceptor.EscrowStack();
+        //    //acceptor.Close();
+        //}
     }
 }

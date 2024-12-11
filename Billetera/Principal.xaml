@@ -45,7 +45,7 @@
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="$600.00" FontSize="45" FontWeight="Bold" x:Name="Restante"/>
             </Grid>
         </StackPanel>
-        <StackPanel Grid.Row="2">
+        <!--<StackPanel Grid.Row="2">
             <Grid  Margin="0,20,0,20">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -55,7 +55,7 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Content="Devolver" Click="DevolverButton" Style="{StaticResource cancelDepositarButton}" x:Name="Cancelar">
+                <Button Grid.Column="0" Content="Devolver" Click="DevolverButton" Style="{StaticResource cancelDepositarButton}" >
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}" CornerRadius="12" Padding="{TemplateBinding Padding}">
@@ -76,6 +76,6 @@
                 </Button>
 
             </Grid>
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </Page>
