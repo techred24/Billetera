@@ -24,7 +24,8 @@ namespace Billetera
     public partial class Principal : Page
     {
         private static double totalDepositar = 50;
-        private Acceptor? acceptor;
+        private Acceptor acceptor;
+        private IDocument billete;
         public Principal()
         {
             InitializeComponent();
@@ -33,52 +34,60 @@ namespace Billetera
             //float.TryParse(depositadoTexto, out float importeatm);
             //try
             //{
-                acceptor = new Acceptor();
-                MessageBox.Show($"{acceptor.Connected}");
-                //acceptor.Open("COM2");
-                foreach (string port in SerialPort.GetPortNames())
-                {
-                    if (port == "COM2")
-                    {
-                    try
-                    {
-                        acceptor.Open("COM2");
-                        break;
-                    }
-                    catch (UnauthorizedAccessException ex)
-                    {
-                        MessageBox.Show($"Acceso denegado al puerto: {ex.Message}");
-                    }
-                    catch (IOException ex)
-                    {
-                        MessageBox.Show($"Error de E/S al abrir el puerto: {ex.Message}");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Ocurrió un error al intentar abrir el puerto: {ex.Message}");
-                    }
-                    //try
-                    //    {
-                    //        acceptor.Open("COM2");
-                    //        break;
-                    //    }
-                    //    catch (Exception ex)
-                    //    {
-                    //        MessageBox.Show($"No se pudo abrir el puerto: {ex.Message}");
-                    //    }
-                    }
-                }
-                TotalDepositar.Text = $"${totalDepositar:0.00}";
-                Restante.Text = $"${totalDepositar:0.00}";
-                //Depositado.Text = $"${totalDepositar:0.00}";
-            //} catch (Exception ex)
-            //{
-            //    MessageBox.Show($"Error en el constructor de Principal: {ex.Message}\n{ex.StackTrace}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    Application.Current.Shutdown();
-            //}
-
+            
+            acceptor = new Acceptor();
+            Thread threadAcceptor = new Thread(AcceptorRoutine);
+            threadAcceptor.IsBackground = true;
+            threadAcceptor.Start();
+            btnReturn.IsEnabled = false;
+            btnStack.IsEnabled = false;
 
         }
+
+        private void AcceptorRoutine()
+        {
+            ledStatus.Dispatcher.Invoke(() =>
+            { ledStatus.Fill = new SolidColorBrush(Colors.Red); });
+            acceptor.Open("COM2",PowerUp.A);
+            // Con este delay no marca error de conexion
+            Thread.Sleep(6000);
+
+            while (true)
+            {
+                if (acceptor.Connected)
+                {
+                    acceptor.EnableAcceptance = true;
+                    btnReturn.Dispatcher.Invoke(() => { btnReturn.IsEnabled = true; });
+                    btnStack.Dispatcher.Invoke(() => { btnStack.IsEnabled = true; });
+                    ledStatus.Dispatcher.Invoke(() =>
+                    { ledStatus.Fill = new SolidColorBrush(Colors.Green); });
+                }
+            }
+
+        }
+
+        private void btnReturn_Click(object sender, RoutedEventArgs e)
+        {
+            if (acceptor.DeviceState == State.Escrow)
+            {
+                billete = acceptor.getDocument();
+                MessageBox.Show(billete.ValueString);
+                acceptor.EscrowReturn();
+            }
+        }
+
+        private void btnStack_Click(object sender, RoutedEventArgs e)
+        {
+            if(acceptor.DeviceState == State.Escrow)
+            {
+                billete = acceptor.getDocument();
+                MessageBox.Show(billete.ValueString);
+                acceptor.EscrowStack();
+                
+            }
+        }
+
+
         //private void DevolverButton(object sender, RoutedEventArgs e)
         //{
         //    //acceptor.EscrowReturn();

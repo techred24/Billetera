@@ -10,7 +10,7 @@
 
     <Grid Background="White">
         <Grid.ColumnDefinitions>
-            
+
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -45,6 +45,10 @@
                 <TextBlock Grid.Row="2" Grid.Column="1" Text="$600.00" FontSize="45" FontWeight="Bold" x:Name="Restante"/>
             </Grid>
         </StackPanel>
+        <Label x:Name="lblStatus" Content="Estado billetero: " HorizontalAlignment="Left" Height="116" Margin="185,189,0,0" Grid.Row="2" VerticalAlignment="Top" Width="452" FontSize="55" FontWeight="Bold"/>
+        <Ellipse x:Name="ledStatus" HorizontalAlignment="Left" Height="52" Margin="642,213,0,0" Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="53"/>
+        <Button x:Name="btnStack" Content="Stack" HorizontalAlignment="Left" Height="134" Margin="443,445,0,0" Grid.Row="2" VerticalAlignment="Top" Width="292" FontSize="55" Click="btnStack_Click"/>
+        <Button x:Name="btnReturn" Content="Return" HorizontalAlignment="Left" Height="134" Margin="1204,445,0,0" Grid.Row="2" VerticalAlignment="Top" Width="292" FontSize="55" Click="btnReturn_Click"/>
         <!--<StackPanel Grid.Row="2">
             <Grid  Margin="0,20,0,20">
                 <Grid.RowDefinitions>
