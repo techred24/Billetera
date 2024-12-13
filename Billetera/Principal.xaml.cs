@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,7 +26,10 @@ namespace Billetera
     {
         private static double totalDepositar = 50;
         private Acceptor acceptor;
-        private IDocument billete;
+        //private IDocument billete;
+
+
+
         public Principal()
         {
             InitializeComponent();
@@ -41,7 +45,31 @@ namespace Billetera
             threadAcceptor.Start();
             btnReturn.IsEnabled = false;
             btnStack.IsEnabled = false;
+            // Subscripcion al evento
+            acceptor.OnStackedWithDocInfo += HandleStackedWithDocInfo;
+            acceptor.OnReturned += Acceptor_OnReturned;
 
+        }
+
+
+
+        // Eventos
+        private void Acceptor_OnReturned(object sender, EventArgs e)
+        {
+            //MessageBox.Show($"TIPO: {e.ToString()}");
+            billLabel.Dispatcher.Invoke(() =>
+            {
+                billLabel.Content = $"TIPO: {e.ToString()}";
+            });
+        }
+
+        private void HandleStackedWithDocInfo(object sender, EventArgs e)
+        {
+            //MessageBox.Show($"TIPO: {e.ToString()}");
+            billLabel.Dispatcher.Invoke(() =>
+            {
+                billLabel.Content = $"TIPO: {e.ToString()}";
+            });
         }
 
         private void AcceptorRoutine()
@@ -60,19 +88,32 @@ namespace Billetera
                     btnReturn.Dispatcher.Invoke(() => { btnReturn.IsEnabled = true; });
                     btnStack.Dispatcher.Invoke(() => { btnStack.IsEnabled = true; });
                     ledStatus.Dispatcher.Invoke(() =>
-                    { ledStatus.Fill = new SolidColorBrush(Colors.Green); });
+                    { ledStatus.Fill = new SolidColorBrush(Colors.Green); }); 
+                    
+                    //Bill? bill = acceptor.getDocument() as Bill;
+
                 }
             }
 
         }
 
+
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
             if (acceptor.DeviceState == State.Escrow)
             {
-                billete = acceptor.getDocument();
-                MessageBox.Show(billete.ValueString);
+                
+                //billete = acceptor.getDocument();
+                Bill? bill = acceptor.getDocument() as Bill;
+
+                if (bill != null)
+                {
+                   // MessageBox.Show($"País: {bill.Country}");
+                    MessageBox.Show($"Valor del Billete: {bill.Value}");
+                }
+                //MessageBox.Show(billete.ValueString);
                 acceptor.EscrowReturn();
+                
             }
         }
 
@@ -80,8 +121,13 @@ namespace Billetera
         {
             if(acceptor.DeviceState == State.Escrow)
             {
-                billete = acceptor.getDocument();
-                MessageBox.Show(billete.ValueString);
+                //billete = acceptor.getDocument();
+                Bill? bill = acceptor.getDocument() as Bill;
+                if (bill != null) { 
+                    //MessageBox.Show($"País: {bill.Country}");
+                    MessageBox.Show($"Valor del Billete: {bill.Value}");
+                }
+                //MessageBox.Show(billete.ValueString);
                 acceptor.EscrowStack();
                 
             }
