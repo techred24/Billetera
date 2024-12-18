@@ -36,20 +36,20 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Total a depositar:" Margin="0, 0 70, 0" TextAlignment="Right" FontSize="45" FontWeight="Bold"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="$600.00" FontSize="45" FontWeight="Bold" x:Name="TotalDepositar"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="$0.00" FontSize="45" FontWeight="Bold" x:Name="TotalDepositar"/>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Depositado:" Margin="0, 0 70, 0" TextAlignment="Right" FontSize="55" FontWeight="Bold"/>
                 <TextBlock Grid.Row="1" Grid.Column="1" Text="$0.00" FontSize="55" FontWeight="Bold" x:Name="Depositado"/>
 
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Restante:" Margin="0, 0 70, 0" TextAlignment="Right" FontSize="45" FontWeight="Bold"/>
-                <TextBlock Grid.Row="2" Grid.Column="1" Text="$600.00" FontSize="45" FontWeight="Bold" x:Name="Restante"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="$0.00" FontSize="45" FontWeight="Bold" x:Name="Restante"/>
             </Grid>
         </StackPanel>
         <Label x:Name="lblStatus" Content="Estado billetero: " HorizontalAlignment="Left" Height="116" Margin="185,189,0,0" Grid.Row="2" VerticalAlignment="Top" Width="452" FontSize="55" FontWeight="Bold"/>
         <Ellipse x:Name="ledStatus" HorizontalAlignment="Left" Height="52" Margin="642,213,0,0" Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="53"/>
         <Button x:Name="btnStack" Content="Stack" HorizontalAlignment="Left" Height="134" Margin="443,445,0,0" Grid.Row="2" VerticalAlignment="Top" Width="292" FontSize="55" Click="btnStack_Click"/>
         <Button x:Name="btnReturn" Content="Return" HorizontalAlignment="Left" Height="134" Margin="1204,445,0,0" Grid.Row="2" VerticalAlignment="Top" Width="292" FontSize="55" Click="btnReturn_Click"/>
-        <Label x:Name="billLabel" Content="Info" HorizontalAlignment="Center" Margin="0,485,0,0" Grid.Row="2" VerticalAlignment="Top" Width="150" Height="94" FontSize="50"/>
+        <Label x:Name="billLabel" Content="Info" HorizontalAlignment="Left" Margin="996,200,0,0" Grid.Row="2" VerticalAlignment="Top" Width="654" Height="94" FontSize="48"/>
         <!--<StackPanel Grid.Row="2">
             <Grid  Margin="0,20,0,20">
                 <Grid.RowDefinitions>

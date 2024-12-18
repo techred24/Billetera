@@ -7,15 +7,18 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+
 
 namespace Billetera
 {
@@ -24,12 +27,14 @@ namespace Billetera
     /// </summary>
     public partial class Principal : Page
     {
-        private static double totalDepositar = 50;
+        private static double totalDepositar = 20;
+        private static double restante = totalDepositar;
+        private static double depositado = 0;
         private Acceptor acceptor;
-        //private IDocument billete;
-
-
-
+        private Bill? billete ;
+        private delegate void ReturnedDelegate(object sender, EventArgs e);
+        private System.Timers.Timer _timer;
+        private System.Threading.Timer _theTimer;
         public Principal()
         {
             InitializeComponent();
@@ -38,47 +43,155 @@ namespace Billetera
             //float.TryParse(depositadoTexto, out float importeatm);
             //try
             //{
+            //$"${ingresado:00}";
+            TotalDepositar.Text = $"${totalDepositar:00}";
+            Depositado.Text = $"${depositado:00}";
+            Restante.Text = $"{restante:00}";
             
             acceptor = new Acceptor();
             Thread threadAcceptor = new Thread(AcceptorRoutine);
+            //Thread eventsThread = new Thread(FireEventsRoutine);
             threadAcceptor.IsBackground = true;
             threadAcceptor.Start();
             btnReturn.IsEnabled = false;
             btnStack.IsEnabled = false;
+
             // Subscripcion al evento
             acceptor.OnStackedWithDocInfo += HandleStackedWithDocInfo;
             acceptor.OnReturned += Acceptor_OnReturned;
+            //StartTimer();
+            SetTimer();
+        }
+        public void StartTimer()
+        {
+            _timer = new System.Timers.Timer(1000);
+            _timer.Elapsed += FireEventsRoutine;
+            _timer.AutoReset = true;
+            _timer.Start();
+        }
+        public void SetTimer()
+        {
+            _theTimer = new System.Threading.Timer(FireEvent, null, 0, 1000);
+        }
+        private void FireEvent(object state)
+        {
+            //if (acceptor.DeviceState == State.Escrow)
+            //{
+            //    Application.Current.Dispatcher.Invoke(() =>
+            //    {
+            //        MessageBox.Show("ESCROW STATE", "Mensaje", MessageBoxButton.OK, MessageBoxImage.Information);
+            //    });
+            //}
 
+            //if (acceptor.DeviceState == State.Stacked)
+            //{
+            //    Application.Current.Dispatcher.Invoke(() =>
+            //    {
+            //        MessageBox.Show("STACKED STATE");
+            //    });
+            //}
+            if (acceptor.DeviceState == State.Escrow)
+            {
+                billete = acceptor.getDocument() as Bill;
+
+                if (billete != null)
+                {
+                    acceptor.EscrowStack();
+                    //MessageBox.Show($"Billete: {billete.Value}", "Mensaje", MessageBoxButton.OK, MessageBoxImage.Information);
+                    string depositadoTexto = Depositado.Text.Replace("$", "");
+                    double.TryParse(depositadoTexto, out double depositadoDouble);
+                    //if (depositadoDouble == totalDepositar)
+                    //{
+                    //    acceptor.EscrowReturn();
+                    //    MessageBox.Show("Pago completo");
+                    //    return;
+                    //}
+                    double newDepositadoValue = depositadoDouble + billete.Value;
+
+                    //string restanteTexto = Restante.Text.Replace("$", "");
+                    //double.TryParse(restanteTexto, out double restanteDouble);
+                    //double newRestanteValue = restanteDouble - newDepositadoValue;
+                    //if (newDepositadoValue > totalDepositar)
+                    //{
+                    //    //acceptor.EscrowReturn();
+                    //    MessageBox.Show("Se pagó de más");
+                    //    return;
+                    //}
+                    //acceptor.EscrowStack();
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        Depositado.Text = $"${newDepositadoValue:00}";
+                        //Restante.Text = $"${newRestanteValue:00}";
+                    });
+                }
+            }
+        }
+
+        private void FireEventsRoutine(object source, ElapsedEventArgs e)
+        {
+            //Application.Current.Dispatcher.Invoke(() =>
+            //{
+            //    MessageBox.Show("Mensaje desde el hilo en segundo plano", "Mensaje", MessageBoxButton.OK, MessageBoxImage.Information);
+            //});
+            if (acceptor.DeviceState == State.Escrow)
+            {
+                billete = acceptor.getDocument() as Bill;
+
+                if (billete != null)
+                {
+                    acceptor.EscrowStack();
+                    //MessageBox.Show($"Billete: {billete.Value}", "Mensaje", MessageBoxButton.OK, MessageBoxImage.Information);
+                    string depositadoTexto = Depositado.Text.Replace("$", "");
+                    double.TryParse(depositadoTexto, out double depositadoDouble);
+                    //if (depositadoDouble == totalDepositar)
+                    //{
+                    //    acceptor.EscrowReturn();
+                    //    MessageBox.Show("Pago completo");
+                    //    return;
+                    //}
+                    double newDepositadoValue = depositadoDouble + billete.Value;
+
+                    string restanteTexto = Restante.Text.Replace("$", "");
+                    double.TryParse(restanteTexto, out double restanteDouble);
+                    double newRestanteValue = restanteDouble - newDepositadoValue;
+                    if (newDepositadoValue > totalDepositar)
+                    {
+                        //acceptor.EscrowReturn();
+                        MessageBox.Show("Se pagó de más");
+                        return;
+                    }
+                    //acceptor.EscrowStack();
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        Depositado.Text = $"${newDepositadoValue:00}";
+                        Restante.Text = $"${newRestanteValue:00}";
+                    });
+                }
+            }
         }
 
 
-
-        // Eventos
         private void Acceptor_OnReturned(object sender, EventArgs e)
         {
-            //MessageBox.Show($"TIPO: {e.ToString()}");
-            billLabel.Dispatcher.Invoke(() =>
-            {
-                billLabel.Content = $"TIPO: {e.ToString()}";
-            });
+            MessageBox.Show("Billete regresado");
         }
 
         private void HandleStackedWithDocInfo(object sender, EventArgs e)
         {
-            //MessageBox.Show($"TIPO: {e.ToString()}");
-            billLabel.Dispatcher.Invoke(() =>
-            {
-                billLabel.Content = $"TIPO: {e.ToString()}";
-            });
+            totalDepositar += billete.Value;
+            Depositado.Text = totalDepositar.ToString();
         }
 
-        private void AcceptorRoutine()
+        private  void AcceptorRoutine()
         {
             ledStatus.Dispatcher.Invoke(() =>
             { ledStatus.Fill = new SolidColorBrush(Colors.Red); });
             acceptor.Open("COM2",PowerUp.A);
             // Con este delay no marca error de conexion
             Thread.Sleep(6000);
+
+            //Esta linea es la que manda a disparar el evento
+            //Acceptor_OnConnected(this, EventArgs.Empty);
 
             while (true)
             {
@@ -88,61 +201,43 @@ namespace Billetera
                     btnReturn.Dispatcher.Invoke(() => { btnReturn.IsEnabled = true; });
                     btnStack.Dispatcher.Invoke(() => { btnStack.IsEnabled = true; });
                     ledStatus.Dispatcher.Invoke(() =>
-                    { ledStatus.Fill = new SolidColorBrush(Colors.Green); }); 
-                    
-                    //Bill? bill = acceptor.getDocument() as Bill;
-
+                    { ledStatus.Fill = new SolidColorBrush(Colors.Green); });
                 }
-            }
-
         }
+
+    }
 
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
             if (acceptor.DeviceState == State.Escrow)
-            {
-                
-                //billete = acceptor.getDocument();
-                Bill? bill = acceptor.getDocument() as Bill;
+            {               
+           
+                //Bill? bill = acceptor.getDocument() as Bill;
+                billete = acceptor.getDocument() as Bill;
 
-                if (bill != null)
+                if (billete != null)
                 {
-                   // MessageBox.Show($"País: {bill.Country}");
-                    MessageBox.Show($"Valor del Billete: {bill.Value}");
+                    acceptor.EscrowReturn();
+                    Acceptor_OnReturned(this, EventArgs.Empty);
                 }
-                //MessageBox.Show(billete.ValueString);
-                acceptor.EscrowReturn();
-                
             }
+
         }
 
         private void btnStack_Click(object sender, RoutedEventArgs e)
         {
             if(acceptor.DeviceState == State.Escrow)
             {
-                //billete = acceptor.getDocument();
-                Bill? bill = acceptor.getDocument() as Bill;
-                if (bill != null) { 
+                billete = acceptor.getDocument() as Bill;
+                //Bill? bill = acceptor.getDocument() as Bill;
+                if (billete != null) {
                     //MessageBox.Show($"País: {bill.Country}");
-                    MessageBox.Show($"Valor del Billete: {bill.Value}");
+                   
+                    acceptor.EscrowStack();
+                    HandleStackedWithDocInfo(this, EventArgs.Empty);
                 }
-                //MessageBox.Show(billete.ValueString);
-                acceptor.EscrowStack();
-                
             }
         }
-
-
-        //private void DevolverButton(object sender, RoutedEventArgs e)
-        //{
-        //    //acceptor.EscrowReturn();
-        //    //acceptor.Close();
-        //}
-        //private void Stack(object sender, RoutedEventArgs e)
-        //{
-        //    //acceptor.EscrowStack();
-        //    //acceptor.Close();
-        //}
     }
 }
